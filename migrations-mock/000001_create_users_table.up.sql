@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    username VARCHAR(16) NOT NULL,
+    email VARCHAR(64) UNIQUE NOT NULL,
+    password_hash VARCHAR(256) NOT NULL
+);
