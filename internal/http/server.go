@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"net/http"
 	"web/example/internal/http/handler"
+	"web/example/internal/http/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +21,9 @@ func StartServer(db_connection *sql.DB) {
 	})
 
 	r.POST("/user", user_handler.Create)
-	r.DELETE("/user", user_handler.Delete)
-	r.GET("/user", user_handler.Get)
-	r.PATCH("/user", user_handler.ChangeUsername)
+	r.DELETE("/user", middleware.RequireMockToken(), user_handler.Delete)
+	r.GET("/user", middleware.RequireMockToken(), user_handler.Get)
+	r.PATCH("/user", middleware.RequireMockToken(), user_handler.ChangeUsername)
 
 	r.POST("/user/login", user_handler.Login)
 
