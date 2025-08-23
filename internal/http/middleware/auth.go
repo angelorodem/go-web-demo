@@ -23,7 +23,6 @@ func RequireBearer(expected string) gin.HandlerFunc {
 	}
 }
 
-// Convenience wrapper for your mock token.
 func RequireMockToken() gin.HandlerFunc {
 	return RequireBearer(MockValidJWT)
 }
