@@ -10,7 +10,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CreateUserService(req *handlermodel.CreateUserRequest, db *sql.DB) error {
+// UserService handles all business logic for users
+type UserService struct {
+	UserRepo repository.UserRepositoryInterface
+}
+
+// NewUserService creates a new instance of UserService with repository
+func NewUserService(db *sql.DB) *UserService {
+	return &UserService{
+		UserRepo: repository.NewUserRepository(db),
+	}
+}
+
+func (s *UserService) CreateUserService(req *handlermodel.CreateUserRequest) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 
 	if err != nil {
@@ -25,18 +37,12 @@ func CreateUserService(req *handlermodel.CreateUserRequest, db *sql.DB) error {
 		Password_hash: pwh,
 	}
 
-	err = repository.CreateUser(db, user)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return s.UserRepo.CreateUser(user)
 }
 
-func LoginUserService(req *handlermodel.LoginUserRequest, db *sql.DB) (string, error) {
+func (s *UserService) LoginUserService(req *handlermodel.LoginUserRequest) (string, error) {
 
-	usr, err := repository.GetUser(db, req.Email)
+	usr, err := s.UserRepo.ReadUser(req.Email)
 
 	if err != nil {
 		return "", err
@@ -51,4 +57,16 @@ func LoginUserService(req *handlermodel.LoginUserRequest, db *sql.DB) (string, e
 	// For simplicity sake, we use a fixed string intead of a secure token
 	return "MOCK_VALID_JWT", nil
 
+}
+
+func (s *UserService) DeleteUser(email string) error {
+	return s.UserRepo.DeleteUser(email)
+}
+
+func (s *UserService) ReadUser(email string) (*domain.User, error) {
+	return s.UserRepo.ReadUser(email)
+}
+
+func (s *UserService) UpdateUsername(email string, newUsername string) error {
+	return s.UserRepo.UpdateUsername(email, newUsername)
 }

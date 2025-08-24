@@ -1,0 +1,11 @@
+all: false
+dir: 'internal/repository/mocks'
+formatter: goimports
+template: testify
+filename: mocks.go
+pkgname: mocks
+packages:
+  web/example/internal/repository:
+    config:
+      all: true
+      recursive: true

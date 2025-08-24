@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS posts (
-    id INTEGER UNIQUE NOT NULL, -- no need autoincrement in sqlite for old id reusage
+    id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     title VARCHAR(512) NOT NULL,
     content VARCHAR(2048) NOT NULL,
